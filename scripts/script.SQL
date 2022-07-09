@@ -1,0 +1,31 @@
+-- SELECT oc.id, oc.data, f.nome, f.ie FROM fornecedor as f, ordem_compra as oc;
+-- SELECT oc.id, oc.data, f.nome, f.ie FROM fornecedor as f, ordem_compra as oc WHERE oc.idFornecedor = f.id ORDER BY f.ie;
+-- DESC;
+-- SELECT ioc.idOrdemCompra, ioc.idMaterial, mat.nome FROM item_ordem_compra as ioc, material as mat WHERE ioc.idMaterial = mat.id ORDER BY ioc.idOrdemCompra;
+-- Exercicios: 
+-- 1. Exiba os dados da compra (item_ordem_compra) de todos os materiais cujo quantidade seja maior que 10.
+-- R: SELECT * FROM item_ordem_compra WHERE quantidade > 10;
+-- 2. Exiba os dados da compra (item_ordem_compra) de todos os materiais cujo valor seja menor que 50.
+-- R: SELECT * FROM item_ordem_compra WHERE valor < 50;
+-- SELECT * FROM item_ordem_compra WHERE quantidade > 10 AND valor < 50;
+-- 3. Exiba os dados da compra (item_ordem_compra) de todos os materiais cuja quantidade seja maior que 100 e o valor seja menor que 50, contendo o nome do material e o nome do fornecedor.
+-- R: SELECT * FROM item_ordem_compra as ioc, fornecedor as f, material as mat, ordem_compra as oc WHERE ioc.quantidade > 100 AND ioc.valor < 50 AND ioc.idMaterial = mat.id AND ioc.idOrdemCompra = oc.id AND oc.idFornecedor = f.id;
+-- SELECT *, quantidade *valor as subtotal FROM item_ordem_compra;
+-- 4. Exiba o subtotal de cada material vendido e o nome do fornecedor, para cada item_ordem_compra.
+-- R: SELECT ioc.idOrdemCompra,ioc.idMaterial , mat.nome, f.nome, ioc.valor, ioc.quantidade , ioc.quantidade *ioc.valor as subtotal FROM item_ordem_compra as ioc, fornecedor as f, material as mat, ordem_compra as oc WHERE ioc.idMaterial = mat.id AND f.id = oc.id AND oc.id= ioc.idOrdemCompra ORDER BY ioc.idOrdemCompra;
+-- SELECT idOrdemCompra, SUM(quantidade*valor) as totalCompra FROM item_ordem_compra GROUP BY idOrdemCompra;
+-- SELECT idOrdemCompra, SUM(quantidade * valor) as totalCompra FROM item_ordem_compra GROUP BY idOrdemCompra HAVING totalCompra > 5000;
+-- Toda vez que usar um agrupador tenho que usar o HAVING e não o WHERE!
+-- 5. O nome do fornecedor da ordem de compra, a ordem de compra e o total pago pela ordem de compra.
+-- R: SELECT f.nome, oc.id, sum(valor * quantidade) as total FROM ordem_compra as oc, fornecedor as f, item_ordem_compra as ioc WHERE oc.idFornecedor = f.id AND oc.id = ioc.idOrdemCompra GROUP BY ioc.idOrdemCompra;
+-- 6. O nome do fornecedor da ordem de compra, a data da ordem de compra, o total pago pela ordem de compra, num determinado intervalo de datas.
+-- R: SELECT f.nome, oc.data, sum(valor * quantidade) as total FROM ordem_compra as oc, fornecedor as f, item_ordem_compra as ioc WHERE oc.idFornecedor = f.id AND oc.id = ioc.idOrdemCompra AND oc.data BETWEEN '2022-05-15' AND '2022-05-20' GROUP BY ioc.idOrdemCompra;
+-- *************************************************************************************************************
+-- 01/07/2022:
+-- Listar o nome de cada material e o valor médio desse material
+-- SELECT mat.id, mat.nome, AVG(valor) as media FROM material as mat, item_ordem_compra as ioc WHERE mat.id = ioc.idMaterial GROUP BY mat.id;
+-- Listar o nome de cada material e o valor médio desse material entre os dias 10/05/2022 e 13/05/2022
+-- SELECT mat.nome, AVG(valor) as media FROM material as mat, item_ordem_compra as ioc, ordem_compra as oc WHERE mat.id = ioc.idMaterial AND oc.data BETWEEN '2022-05-10' AND '2022-05-13' GROUP BY mat.id ORDER BY mat.id;
+-- CRUD (INSERT, SELECT, UPDATE, DELETE)
+-- Contagem de quantas vezes o produto aparece na ordem de compra, ordenado pelo numero de vezes que ele aparece
+-- SELECT mat.nome, COUNT(nome) as total FROM material as mat, item_ordem_compra as ioc WHERE mat.id = ioc.idMaterial GROUP BY mat.nome ORDER BY total;
